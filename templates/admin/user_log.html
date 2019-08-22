@@ -1,0 +1,35 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 日志管理 <span class="c-gray en">&gt;</span> 会员登录日志列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="r">共有数据：<strong>{{ logs | length }}</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-hover table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="100">编号</th>
+							<th width="100">会员</th>
+							<th width="100">登录时间</th>
+							<th width="100">登录IP</th>
+						</tr>
+					</thead>
+					<tbody>
+                    {% for log in logs %}
+						<tr class="text-c">
+							<td>{{ log.id }}</td>
+							<td>{{ log.user.name }}</td>
+							<td>{{ log.add_time }}</td>
+                            <td>{{ log.ip }}</td>
+						</tr>
+                    {% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+{% endblock %}

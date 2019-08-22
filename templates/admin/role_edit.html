@@ -1,0 +1,38 @@
+{% extends 'admin/base_add.html' %}
+
+{% block content %}
+<article class="cl pd-20">
+	<form method="post" class="form form-horizontal" id="form-member-add">
+        {{ form.csrf_token }}
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">{{ form.name.label }}</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				{{ form.name(value=role.name) }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.name.errors %}
+                        {{ err }}
+                    {% endfor %}
+                {{ get_flashed_messages()[0] }}
+                </p>
+			</div>
+		</div>
+        <div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">{{ form.auths.label }}</label>
+			<div class="formControls col-xs-8 col-sm-9">
+                {{ form.auths }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.auths.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				{{ form.submit }}
+			</div>
+		</div>
+	</form>
+</article>
+{% endblock %}

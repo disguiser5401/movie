@@ -1,0 +1,32 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+    <div class="container" id="content">
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+                <li id="u-1">
+                    <a href="{{ url_for('blue_user.user_info') }}">个人信息</a>
+                </li>
+                <li id="u-2">
+                    <a href="{{ url_for('blue_user.pwd') }}">修改密码</a>
+                </li>
+                <li id="u-3">
+                    <a href="{{ url_for('blue_user.comment', page=1) }}">我的评论</a>
+                </li>
+                <li id="u-4">
+                    <a href="{{ url_for('blue_user.log', page=1) }}">登录日志</a>
+                </li>
+                <li id="u-5">
+                    <a href="{{ url_for('blue_user.collection', page=1) }}">收藏电影</a>
+                </li>
+                <li id="u-6">
+                    <a href="{{ url_for('blue_user.score', page=1) }}">我的评分</a>
+                </li>
+            </ul>
+            <div class="layui-tab-content">
+                {% block user_content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

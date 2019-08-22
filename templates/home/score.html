@@ -1,0 +1,66 @@
+{% extends 'home/base_user.html' %}
+
+{% block user_content %}
+    <table class="layui-table">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr class="text-center">
+            <th>
+                <div class="text-center">电影</div>
+            </th>
+            <th>
+                <div class="text-center">星级</div>
+            </th>
+            <th>
+                <div class="text-center">时间</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for score in page_data.items %}
+            <tr>
+                <td class="text-center">{{ score.movie.title }}</td>
+                <td class="text-center">
+                    {% for i in range(score.star) %}
+                        <i class="layui-icon layui-icon-rate-solid" style="color: orangered;"></i>
+                    {% endfor %}
+                    {% for i in range(5-score.star) %}
+                        <i class="layui-icon layui-icon-rate" style="color: orangered;"></i>
+                    {% endfor %}
+                </td>
+                <td class="text-center">{{ score.add_time }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page" class="text-center"></div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#u-6').addClass('layui-this');
+
+            layui.use('laypage', function () {
+                let laypage = layui.laypage;
+
+                laypage.render({
+                    elem: 'page',
+                    limit: {{ page_data.per_page }},
+                    count: {{ page_data.total }},
+                    curr: {{ page_data.page }},
+                    jump: function (obj, first) {
+                        let page = obj.curr;
+                        if (!first) {
+                            location.href = "/user/score/" + page + '/';
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}

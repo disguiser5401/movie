@@ -1,0 +1,58 @@
+{% extends 'home/base_user.html' %}
+
+{% block user_content %}
+    <table class="layui-table">
+        <colgroup>
+            <col width="100">
+            <col width="300">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr class="text-center">
+            <th>
+                <div class="text-center">评论电影</div>
+            </th>
+            <th>
+                <div class="text-center">评论内容</div>
+            </th>
+            <th>
+                <div class="text-center">评论时间</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for comment in page_data.items %}
+            <tr>
+                <td class="text-center"><a href="{{ url_for('blue_movie.detail', movie_id=comment.movie.id) }}">{{ comment.movie.title }}</a></td>
+                <td class="text-center">{{ comment.content|safe }}</td>
+                <td class="text-center">{{ comment.add_time }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page" class="text-center"></div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#u-3').addClass('layui-this');
+
+            layui.use('laypage', function () {
+                let laypage = layui.laypage;
+                laypage.render({
+                    elem: 'page',
+                    limit: {{ page_data.per_page }},
+                    count: {{ page_data.total }},
+                    curr: {{ page_data.page }},
+                    jump: function (obj, first) {
+                        let page = obj.curr;
+                        if (!first) {
+                            location.href = "/user/comment/" + page + '/';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

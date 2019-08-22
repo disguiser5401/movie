@@ -1,0 +1,44 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 评论管理 <span class="c-gray en">&gt;</span> 评论管理<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+                <span class="l">
+                    <a href="javascript:;" onclick="datadel('{{ url_for('blue_admin.comment_del') }}')" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+                </span>
+				<span class="r">共有数据：<strong>{{ comments | length }}</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-hover table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox"></th>
+							<th width="40">编号</th>
+							<th width="70">评论人</th>
+                            <th width="70">电影</th>
+							<th width="150">内容</th>
+							<th width="100">添加时间</th>
+							<th width="100">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+                    {% for comment in comments %}
+						<tr class="text-c">
+							<td><input type="checkbox" value="{{ comment.id }}"></td>
+							<td>{{ comment.id }}</td>
+							<td>{{ comment.user.name }}</td>
+							<td>{{ comment.movie.title }}</td>
+							<td class="text-l">{{ comment.content }}</td>
+							<td>{{ comment.add_time }}</td>
+							<td class="td-manage"><a title="删除" href="javascript:;" onclick="data_del(this,'{{ comment.id }}', '{{ url_for('blue_admin.comment_del') }}')" class="ml-5 btn btn-danger radius" style="text-decoration:none">删除</a></td>
+						</tr>
+                    {% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+{% endblock %}

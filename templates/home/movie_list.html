@@ -1,0 +1,84 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <ul class="nav nav-pills nav-justified">
+            <li role="presentation" {% if sort == 'release_time' %}class="active"{% endif %}>
+                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag_id, page=1)+'?sort=release_time' }}">
+                    上映时间<i class="layui-icon layui-icon-down"></i>
+                </a>
+            </li>
+            <li role="presentation" {% if sort == 'star' %}class="active"{% endif %}>
+                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag_id, page=1)+'?sort=star' }}">
+                    电影星级<i class="layui-icon layui-icon-down"></i>
+                </a>
+            </li>
+            <li role="presentation" {% if sort == 'play_num' %}class="active"{% endif %}>
+                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag_id, page=1)+'?sort=play_num' }}">
+                    播放数量<i class="layui-icon layui-icon-down"></i>
+                </a>
+            </li>
+            <li role="presentation" {% if sort == 'comment_num' %}class="active"{% endif %}>
+                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag_id, page=1)+'?sort=comment_num' }}">
+                    评论数量<i class="layui-icon layui-icon-down"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <section class="container">
+        <ul class="row">
+            {% for movie in page_data.items %}
+                <li class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <span class="layui-col-md4">{{ movie.title }}</span>
+                            <div class="layui-col-md4 text-center" style="color: #FF5722;">
+                                {% for i in range(movie.star) %}
+                                    <i class="layui-icon layui-icon-star-fill"></i>
+                                {% endfor %}
+                                {% for i in range(5-movie.star) %}
+                                    <i class="layui-icon layui-icon-star"></i>
+                                {% endfor %}
+                            </div>
+                            <span class="layui-col-md4 text-right">{{ movie.tag.name }}</span>
+                        </div>
+                        <div class="layui-card-body" style="height: 180px;">
+                            <a href="{{ url_for('blue_movie.detail', movie_id=movie.id) }}" class="layui-col-md6">
+                                <img class="img-rounded lazy"
+                                     data-original="{{ url_for('static', filename='media/movie_logo/'+movie.logo) }}"
+                                     alt="{{ movie.title }}" height="164" width="262">
+                            </a>
+                            <div class="layui-col-md6 text-muted" style="overflow: hidden;height: 164px;">
+                                {{ movie.info }}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div id="page" class="text-center"></div>
+    </section>
+    <!--电影列表-->
+{% endblock %}
+
+{% block js %}
+    <script>
+        layui.use('laypage', function () {
+            let laypage = layui.laypage;
+
+            laypage.render({
+                elem: 'page',
+                limit: {{ page_data.per_page }},
+                count: {{ page_data.total }},
+                curr: {{ page_data.page }},
+                jump: function (obj, first) {
+                    let page = obj.curr;
+                    if (!first) {
+                        location.href = "/movie/list/" + {{ tag_id }} +'/' + page + '/{% if sort %}?sort={{ sort }}{% endif %}';
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
+    <!--内容-->
+    <div class="container">
+        <ul class="row">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            有{{ page_data.total }}个符合<span class="text-danger">"{{ title }}"</span>的结果
+        </blockquote>
+            {% for movie in page_data.items %}
+                <li class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <span class="layui-col-md4">{{ movie.title }}</span>
+                            <div class="layui-col-md4 text-center" style="color: #FF5722;">
+                                {% for i in range(movie.star) %}
+                                    <i class="layui-icon layui-icon-star-fill"></i>
+                                {% endfor %}
+                                {% for i in range(5-movie.star) %}
+                                    <i class="layui-icon layui-icon-star"></i>
+                                {% endfor %}
+                            </div>
+                            <span class="layui-col-md4 text-right">{{ movie.tag.name }}</span>
+                        </div>
+                        <div class="layui-card-body" style="height: 180px;">
+                            <a href="{{ url_for('blue_movie.detail', movie_id=movie.id) }}" class="layui-col-md6">
+                                <img class="media-object img-rounded"
+                                     src="{{ url_for('static', filename='media/movie_logo/'+movie.logo) }}"
+                                     alt="{{ movie.title }}" height="164" width="262">
+                            </a>
+                            <div class="layui-col-md6 text-muted" style="overflow: hidden;height: 164px;">
+                                {{ movie.info }}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div id="page" class="text-center"></div>
+    </div>
+    <!--内容-->
+{% endblock %}
+
+{% block js %}
+<script>
+    layui.use('laypage', function () {
+        let laypage = layui.laypage;
+
+        laypage.render({
+            elem: 'page',
+            limit: {{ page_data.per_page }},
+            count: {{ page_data.total }},
+            curr: {{ page_data.page }},
+            jump: function (obj, first) {
+                let page = obj.curr;
+                if(!first){
+                    location.href="/movie/search/" + page +'?title={{ title }}';
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

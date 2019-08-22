@@ -1,0 +1,59 @@
+{% extends 'home/base_user.html' %}
+
+{% block user_content %}
+    <table class="layui-table">
+        <colgroup>
+            <col width="200">
+            <col width="200">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr class="text-center">
+            <th>
+                <div class="text-center">编号</div>
+            </th>
+            <th>
+                <div class="text-center">登录时间</div>
+            </th>
+            <th>
+                <div class="text-center">登录ip</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for log in page_data.items %}
+            <tr>
+                <td class="text-center">{{ log.id }}</td>
+                <td class="text-center">{{ log.add_time }}</td>
+                <td class="text-center">{{ log.ip }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page" class="text-center"></div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#u-4').addClass('layui-this');
+
+            layui.use('laypage', function () {
+                let laypage = layui.laypage;
+
+                laypage.render({
+                    elem: 'page',
+                    limit: {{ page_data.per_page }},
+                    count: {{ page_data.total }},
+                    curr: {{ page_data.page }},
+                    jump: function (obj, first) {
+                        let page = obj.curr;
+                        if (!first) {
+                            location.href = "/user/log/" + page + '/';
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}

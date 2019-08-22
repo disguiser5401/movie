@@ -1,0 +1,54 @@
+{% extends 'home/base_user.html' %}
+
+{% block user_content %}
+    <ul class="layui-row">
+        {% for collection in page_data.items %}
+            <li class="layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <span class="pull-left">{{ collection.movie.title }}</span>
+                        <span class="pull-right">{{ collection.movie.tag.name }}</span>
+                    </div>
+                    <div class="layui-card-body" style="color: #FF5722;">
+                        <a href="{{ url_for('blue_movie.detail', movie_id=collection.movie.id) }}">
+                            <img class="img-rounded lazy" data-original="{{ url_for('static', filename='media/movie_logo/'+collection.movie.logo) }}" alt="{{ collection.movie.title }}" height="164" width="262">
+                        </a>
+                        <div class="text-center">
+                            {% for i in range(collection.movie.star) %}
+                                <i class="layui-icon layui-icon-star-fill"></i>
+                            {% endfor %}
+                            {% for i in range(5-collection.movie.star) %}
+                                <i class="layui-icon layui-icon-star"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <div id="page" class="text-center"></div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            $('#u-5').addClass('layui-this');
+
+            layui.use('laypage', function () {
+                let laypage = layui.laypage;
+                laypage.render({
+                    elem: 'page',
+                    limit: {{ page_data.per_page }},
+                    count: {{ page_data.total }},
+                    curr: {{ page_data.page }},
+                    jump: function (obj, first) {
+                        let page = obj.curr;
+                        if (!first) {
+                            location.href = "/user/collection/" + page + '/';
+                        }
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}

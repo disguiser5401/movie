@@ -1,0 +1,81 @@
+{% extends 'home/base_user.html' %}
+{% block user_content %}
+    <form class="layui-form" method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="name">昵称</label>
+            <div class="layui-input-block">
+                {{ form.name(value=user.name) }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.name.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="email">邮箱</label>
+            <div class="layui-input-block">
+                {{ form.email(value=user.email) }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.email.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="phone">手机</label>
+            <div class="layui-input-block">
+                {{ form.phone(value=user.phone) }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.phone.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">头像</label>
+            <div class="layui-input-block">
+                <img src="{{ url_for('static', filename='media/user/'+user.face) }}" class="img-circle"
+                     height="100" width="100">
+                <br>
+                <label for="face" class="layui-btn">选择头像</label>
+                {{ form.face }}
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">介绍</label>
+            <div class="layui-input-block">
+                {{ form.info }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.info.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                {{ form.submit }}
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        layui.use('form', function () {
+            let form = layui.form;
+        });
+        $(function () {
+            let msg = '{{ get_flashed_messages()[0] }}';
+            if (msg) {
+                layer.msg(msg);
+            }
+
+            $('#u-1').addClass('layui-this');
+        })
+    </script>
+{% endblock %}

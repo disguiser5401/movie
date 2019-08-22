@@ -1,0 +1,263 @@
+{% extends 'home/base.html' %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='DPlayer/dist/DPlayer.min.css') }}">
+{% endblock %}
+{% block content %}
+    <!--内容-->
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md8" style="margin-top: 0;">
+                <div id="dplayer"></div>
+            </div>
+            <div class="layui-col-md4" style="height: 425px;overflow-y: scroll;">
+                <table class="layui-table" lay-size="lg" lay-skin="line" style="margin: 0;">
+                    <colgroup>
+                        <col width="150">
+                        <col width="270">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>片名</td>
+                        <td>{{ movie.title }}</td>
+                    </tr>
+                    <tr>
+                        <td>类型</td>
+                        <td>{{ movie.tag.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>地区</td>
+                        <td>{{ movie.area }}</td>
+                    </tr>
+                    <tr>
+                        <td>片长</td>
+                        <td>{{ movie.length }}分钟</td>
+                    </tr>
+                    <tr>
+                        <td>评分</td>
+                        <td style="color: #FF5722;">
+                            {% for i in range(movie.star) %}
+                                <i class="layui-icon layui-icon-star-fill"></i>
+                            {% endfor %}
+                            {% for i in range(5-movie.star) %}
+                                <i class="layui-icon layui-icon-star"></i>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>上映时间</td>
+                        <td>{{ movie.release_time }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p class="text-muted" style="padding: 15px 30px;line-height: 20px;">{{ movie.info }}</p>
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote layui-row">
+            <div class="layui-col-md2">
+                <a href="javascript:;" style="text-decoration: none;">
+                    <i class="layui-icon layui-icon-video" style="font-size: 25px;"></i>
+                </a>
+                &nbsp;&nbsp;{{ movie.play_num }}
+            </div>
+
+            <div class="layui-col-md2">
+                <a id="collect" href="javascript:;" style="text-decoration: none;">
+                    <i class="layui-icon {% if is_collect %}layui-icon-star{% else %}layui-icon-star-fill{% endif %}"
+                       style="font-size: 25px;"></i>
+                </a>
+                &nbsp;&nbsp;&nbsp;<span id="collect_num">{{ movie.collect_num }}</span>
+            </div>
+
+            <div class="layui-col-md2">
+                <a id="comment" href="javascript:;" style="text-decoration: none;">
+                    <i class="layui-icon layui-icon-reply-fill" style="font-size: 25px;"></i>
+                </a>
+                &nbsp;&nbsp;{{ movie.comment_num }}
+            </div>
+
+            <div class="layui-col-md2">
+                <a href="javascript:;" id="score" style="text-decoration: none;">
+                    <i class="layui-icon layui-icon-rate-half" style="font-size: 25px;"></i>
+                </a>
+                &nbsp;&nbsp;
+                {% for i in range(movie.star) %}
+                    <i class="layui-icon layui-icon-rate-solid" style="color: orangered;"></i>
+                {% endfor %}
+                {% for i in range(5-movie.star) %}
+                    <i class="layui-icon layui-icon-rate" style="color: orangered;"></i>
+                {% endfor %}
+            </div>
+        </blockquote>
+
+        <form id="comment_form" method="post" class="hidden">
+            {{ form.csrf_token }}
+            <div class="layui-row">
+                {{ form.input_content.label }}
+                <div id="editor"></div>
+                {{ form.input_content }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.input_content.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+
+            <div class="layui-row">
+                {{ form.submit }}
+            </div>
+        </form>
+
+        <div class="layui-row text-center hidden" id="score_submit">
+            <div id="score_div"></div>
+            <button type="button" class="layui-btn layui-btn-danger layui-btn-sm">提交评分</button>
+            <hr>
+        </div>
+
+        <div class="layui-card">
+            <div class="layui-card-header">全部评论&nbsp;&nbsp;<span class="layui-badge">{{ movie.comment_num }}</span>
+            </div>
+            <div class="layui-card-body">
+                <ul>
+                    {% for comment in movie.comments %}
+                        <li class="layui-row">
+                            <div class="layui-col-md1 text-center">
+                                <img src="{{ url_for('static', filename='media/user/'+comment.user.face) }}" height="50"
+                                     width="50" class="img-circle">
+                                <br>
+                                {{ comment.user.name }}
+                            </div>
+                            <div class="layui-col-md9">
+                                <div class="layui-card-body">
+                                    {{ comment.content | safe }}
+                                </div>
+                            </div>
+                            <div class="layui-col-md2">
+                                {{ comment.add_time }}
+                            </div>
+                            <hr>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--内容-->
+
+{% endblock %}
+
+{% block js %}
+    <script src="{{ url_for('static', filename='DPlayer/dist/DPlayer.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='wangEditor/release/wangEditor.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='base/js/wangEditor.movie.js') }}"></script>
+    <script>
+        const dp = new DPlayer({
+            element: document.getElementById('dplayer'),
+            video: {
+                url: "{{ url_for('static', filename='media/movie_url/'+movie.url) }}",
+                pic: "{{ url_for('static', filename='media/movie_logo/'+movie.logo) }}",
+            },
+            {% if user %}
+                danmaku: {
+                    id: '{{ movie.id }}',
+                    api: '/movie/danmu/',
+                    user: '{{ user.id }}'
+                }
+            {% endif %}
+        });
+    </script>
+    <script>
+        $(function () {
+            $('#comment').click(function () {
+                {% if user %}
+                    if ($('#comment_form').hasClass('hidden')) {
+                        $('#comment_form').removeClass('hidden');
+                    } else {
+                        $('#comment_form').addClass('hidden');
+                    }
+                {% else %}
+                    let layer = layui.layer;
+                    layer.msg('登录之后才能评论！！');
+                {% endif %}
+            });
+
+            $('#score').click(function () {
+                {% if user %}
+                    if ($('#score_submit').hasClass('hidden')) {
+                        $('#score_submit').removeClass('hidden');
+                    } else {
+                        $('#score_submit').addClass('hidden');
+                    }
+                {% else %}
+                    let layer = layui.layer;
+                    layer.msg('登录之后才能评分！！');
+                {% endif %}
+            });
+
+            layui.use(['rate'], function () {
+                var rate = layui.rate;
+                rate.render({
+                    elem: '#score_div',
+                    value: 5,
+                    text: true,
+                    setText: function (value) {
+                        var arrs = {
+                            '1': 1,
+                            '2': 2,
+                            '3': 3,
+                            '4': 4,
+                            '5': 5
+                        };
+                        this.span.text(arrs[value] || (value + "星"));
+                    }
+                });
+            });
+
+            $('#score_submit button').click(function () {
+                let star = $('#score_div span').text();
+                $.ajax({
+                    type:'POST',
+                    url: '{{ url_for('blue_movie.score', movie_id=movie.id) }}',
+                    data:{
+                        star: star
+                    },
+                    success: function (callback) {
+                        let layer = layui.layer;
+                        layer.msg(callback.msg);
+                    }
+                })
+            });
+
+            $('#collect').click(function () {
+                $.ajax({
+                    url: '{{ url_for('blue_movie.collect', movie_id=movie.id) }}',
+                    type: 'POST',
+                    success: function (data) {
+                        let $collectNum = $('#collect_num');
+                        let $i = $('#collect i');
+                        let num = $collectNum.text();
+                        if (data.info == 'cancel') {
+                            $collectNum.text(parseInt(num) - 1);
+                            $i.removeClass('layui-icon-star-fill');
+                            $i.addClass('layui-icon-star')
+                        } else if (data.info == 'collect') {
+                            $collectNum.text(parseInt(num) + 1);
+                            $i.removeClass('layui-icon-star');
+                            $i.addClass('layui-icon-star-fill')
+                        }
+                        layer.msg(data.msg)
+                    }
+                })
+            });
+
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                let msg = '{{ get_flashed_messages(category_filter=['comment_success'])[0] }}';
+                if (msg) {
+                    let layer = layui.layer;
+                    layer.msg(msg);
+                }
+            });
+        });
+    </script>
+{% endblock %}

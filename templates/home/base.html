@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <title>阳哥影视</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+    {% block css %}{% endblock %}
+    {% block topjs %}{% endblock %}
+</head>
+
+<body>
+
+{% block nav %}
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="/">
+                <img src="{{ url_for('static', filename='base/images/logo.png') }}" height="60">
+            </a>
+        </li>
+        <form class="layui-form layui-inline" action="{{ url_for('blue_movie.search', page=1) }}">
+            <li class="layui-nav-item" style="color: #000;">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入视频名称" class="layui-input">
+            </li>
+            <li class="layui-nav-item">
+                <input type="submit" lay-submit class="layui-btn" value="搜索">
+            </li>
+        </form>
+        <li class="layui-nav-item">
+            <a href="/">首页</a>
+        </li>
+        {% for tag in tags %}
+            <li class="layui-nav-item">
+                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag.id, page=1) }}">{{ tag.name }}</a>
+            </li>
+        {% endfor %}
+        {% if user %}
+            <li class="layui-nav-item" style="float: right;">
+                <a href="#">
+                    <img src="{{ url_for('static', filename='media/user/'+user.face) }}" class="layui-nav-img">我
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="{{ url_for('blue_user.pwd') }}">修改密码</a></dd>
+                    <dd><a href="{{ url_for('blue_user.logout') }}">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" style="float: right;">
+                <a href="{{ url_for('blue_user.user_info') }}">个人中心<span class="layui-badge-dot"></span></a>
+            </li>
+        {% else %}
+            <li class="layui-nav-item" style="float: right;">
+                <a href="{{ url_for('blue_user.register') }}">注册<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="float: right;">
+                <a href="{{ url_for('blue_user.login') }}">登录</a>
+            </li>
+
+        {% endif %}
+    </ul>
+{% endblock nav %}
+
+
+{% block content %}
+
+{% endblock content %}
+<!--底部-->
+<footer>
+    <div class="container" style="margin-top: 30px;">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-center">
+                    ©&nbsp;2019&nbsp;阳哥有限公司&nbsp;
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--底部-->
+<script src="{{ url_for('static', filename='base/js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='base/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+<script src="{{ url_for('static', filename='base/js/jquery.lazyload.min.js') }}"></script>
+<script>
+    layui.use('element', function () {
+        let element = layui.element;
+    });
+
+    layui.use('layer', function () {
+        layer = layui.layer;
+    });
+
+    $(function () {
+        $('img.lazy').lazyload({
+            effect: "fadeIn",
+            threshold :20
+        });
+    });
+
+</script>
+{% block js %}{% endblock %}
+</body>
+</html>

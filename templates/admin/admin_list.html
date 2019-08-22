@@ -1,0 +1,52 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 管理员管理 <span class="c-gray en">&gt;</span> 管理员列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="data_add('添加管理员','{{ url_for('blue_admin.admin_add') }}','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span>
+				<span class="r">共有数据：<strong>{{ admins | length }}</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-hover table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="40">编号</th>
+							<th width="70">管理员名称</th>
+							<th width="70">管理员类型</th>
+							<th width="70">管理员角色</th>
+							<th width="100">添加时间</th>
+						</tr>
+					</thead>
+					<tbody>
+                    {% for admin in admins %}
+						<tr class="text-c">
+							<td>{{ admin.id }}</td>
+							<td>{{ admin.name }}</td>
+							<td>
+                                {% if admin.is_super %}
+                                    超级管理员
+                                {% else %}
+                                    普通管理员
+                                {% endif %}
+                            </td>
+							<td>{{ admin.role.name }}</td>
+							<td>{{ admin.add_time }}</td>
+						</tr>
+                    {% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+/*添加*/
+function data_add(title,url,w,h){
+    layer_show(title,url,w,h);
+}
+</script>
+{% endblock %}

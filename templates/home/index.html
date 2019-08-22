@@ -1,0 +1,91 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+    <div class="layui-container">
+        <section class="layui-carousel" id="carousel">
+            <div carousel-item>
+                {% for banner in banners %}
+                    <div>
+                        <a href="{{ url_for('blue_movie.detail', movie_id=banner.movie.id) }}">
+                            <img src="{{ url_for('static', filename='media/banner_logo/'+banner.logo) }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <section class="container">
+        <blockquote class="layui-elem-quote" style="margin-top: 5px;">本站推荐</blockquote>
+        <div class="row">
+            <ul>
+                {% for hot_movie in hot_movies %}
+                    <li class="layui-col-md3">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <span class="pull-left">{{ hot_movie.title }}</span>
+                                <span class="pull-right">{{ hot_movie.tag.name }}</span>
+                            </div>
+                            <div class="layui-card-body" style="color: #FF5722;">
+                                <a href="{{ url_for('blue_movie.detail', movie_id=hot_movie.id) }}">
+                                    <img class="img-rounded lazy" data-original="{{ url_for('static', filename='media/movie_logo/'+hot_movie.logo) }}" alt="{{ hot_movie.title }}" height="164" width="262">
+                                </a>
+                                <div class="text-center">
+                                    {% for i in range(hot_movie.star) %}
+                                        <i class="layui-icon layui-icon-star-fill"></i>
+                                    {% endfor %}
+                                    {% for i in range(5-hot_movie.star) %}
+                                        <i class="layui-icon layui-icon-star"></i>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="row">
+            <div class="layui-collapse">
+                {% for tag in tags %}
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">
+                            {{ tag.name }}
+                            <div class="pull-right">
+                                <a href="{{ url_for('blue_movie.movie_list', tag_id=tag.id, page=1) }}">
+                                    更多<i class="layui-icon layui-icon-next"></i>
+                                </a>
+                            </div>
+                        </h2>
+                        <div class="layui-colla-content layui-show">
+                            <ul style="height: 120px;">
+                                {% for movie in tag.movies[:6] %}
+                                    <li class="col-md-2">
+                                        <a href="{{ url_for('blue_movie.detail', movie_id=movie.id) }}">
+                                            <img class="img-rounded lazy" data-original="{{ url_for('static', filename='media/movie_logo/'+movie.logo) }}" alt="{{ movie.title }}" height="100" width="165">
+                                            <p class="text-center text-success">{{ movie.title }}</p>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!--电影列表-->
+{% endblock %}
+{% block js %}
+    <script>
+        layui.use('carousel', function () {
+            let carousel = layui.carousel;
+            //建造实例
+            carousel.render({
+                elem: '#carousel',
+                width: '100%', //设置容器宽度,
+                arrow: 'hover', //始终显示箭头
+                anim: 'fade' //切换动画方式
+            });
+        });
+    </script>
+{% endblock %}

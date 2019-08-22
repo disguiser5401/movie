@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 角色管理 <span class="c-gray en">&gt;</span> 角色列表<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel('{{ url_for('blue_admin.role_del') }}')" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="javascript:;" onclick="data_add('添加角色','{{ url_for('blue_admin.role_add') }}','','510')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加角色</a></span>
+				<span class="r">共有数据：<strong>{{ roles | length }}</strong> 条</span>
+			</div>
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-hover table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox"></th>
+							<th width="40">编号</th>
+							<th width="70">角色名称</th>
+							<th width="100">添加时间</th>
+							<th width="100">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+                    {% for role in roles %}
+						<tr class="text-c">
+							<td><input type="checkbox" value="{{ role.id }}"></td>
+							<td>{{ role.id }}</td>
+							<td>{{ role.name }}</td>
+							<td>{{ role.add_time }}</td>
+							<td class="td-manage"><a title="编辑" href="javascript:;" onclick="data_edit('编辑','{{ url_for('blue_admin.role_edit', role_id=role.id) }}','4','','510')" class="ml-5 btn btn-primary radius" style="text-decoration:none">编辑</a><a title="删除" href="javascript:;" onclick="data_del(this,'{{ role.id }}', '{{ url_for('blue_admin.role_del') }}')" class="ml-5 btn btn-danger radius" style="text-decoration:none">删除</a></td>
+						</tr>
+                    {% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+/*添加*/
+function data_add(title,url,w,h){
+    layer_show(title,url,w,h);
+}
+/*编辑*/
+function data_edit(title,url,id,w,h){
+    layer_show(title,url,w,h);
+}
+
+</script>
+{% endblock %}

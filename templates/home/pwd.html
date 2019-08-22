@@ -1,0 +1,56 @@
+{% extends 'home/base_user.html' %}
+
+{% block user_content %}
+    <form class="layui-form" method="post">
+        {{ form.csrf_token }}
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="old_pwd">旧密码</label>
+            <div class="layui-input-block">
+                {{ form.old_pwd }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.old_pwd.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="password1">新密码</label>
+            <div class="layui-input-block">
+                {{ form.password1 }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.password1.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="password2">重复</label>
+            <div class="layui-input-block">
+                {{ form.password2 }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.password2.errors %}
+                        {{ err }}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                {{ form.submit }}
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block js %}
+    <script>
+        layui.use('form', function () {
+            let form = layui.form;
+        });
+        $('#u-2').addClass('layui-this')
+    </script>
+{% endblock %}
+

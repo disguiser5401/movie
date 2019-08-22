@@ -1,0 +1,28 @@
+{% extends 'admin/base_add.html' %}
+
+{% block content %}
+<article class="cl pd-20">
+	<form method="post" class="form form-horizontal">
+		<div class="row cl">
+            {{ form.csrf_token }}
+			<label class="form-label col-xs-4 col-sm-3">标签名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				{{ form.tag_name }}
+                <p style="height: 10px; color: red;">
+                    {% for err in form.tag_name.errors %}
+                        {{ err }}
+                    {% endfor %}
+                    {{ get_flashed_messages()[0] }}
+                </p>
+			</div>
+
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				{{ form.submit }}
+			</div>
+		</div>
+	</form>
+</article>
+{% endblock %}
+
